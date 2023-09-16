@@ -1,25 +1,39 @@
-# https://youtu.be/bluclMxiUkA
-"""
-Application that predicts heart disease percentage in the population of a town
-based on the number of bikers and smokers. 
-
-Trained on the data set of percentage of people biking 
-to work each day, the percentage of people smoking, and the percentage of 
-people with heart disease in an imaginary sample of 500 towns.
-
-"""
-
 
 import numpy as np
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, Response
 import pickle
 import cv2
 
-#Create an app object using the Flask class. 
+#Create an app object using the Flask  class. 
 app = Flask(__name__, static_url_path='/static', static_folder='static')
+camera = cv2.VideoCapture(0)
 
 #Load the trained model. (Pickle file)
-model = pickle.load(open('models/model.pkl', 'rb'))
+# model = pickle.load(open('models/model.pkl', 'rb'))
+
+def generate_frames():
+    while True:
+        success, frame = camera.read()  # read the camera frame
+        if not success:
+            break
+        else:
+            detector=cv2.CascadeClassifier('models/haarcascade_frontalface_default.xml')
+            eye_cascade = cv2.CascadeClassifier('models/haarcascade_eye.xml')
+            faces=detector.detectMultiScale(frame,1.1,7)
+            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+             #Draw the rectangle around each face
+            for (x, y, w, h) in faces:
+                cv2.rectangle(frame, (x, y), (x+w, y+h), (255, 0, 0), 2)
+                roi_gray = gray[y:y+h, x:x+w]
+                roi_color = frame[y:y+h, x:x+w]
+                eyes = eye_cascade.detectMultiScale(roi_gray, 1.1, 3)
+                for (ex, ey, ew, eh) in eyes:
+                    cv2.rectangle(roi_color, (ex, ey), (ex+ew, ey+eh), (0, 255, 0), 2)
+
+            ret, buffer = cv2.imencode('.jpg', frame)
+            frame = buffer.tobytes()
+            yield (b'--frame\r\n'
+                   b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
 #Define the route to be home. 
 #The decorator below links the relative route of the URL to the function it is decorating.
@@ -37,50 +51,23 @@ def home():
 #POST: Used to send HTML form data to the server.
 #Add Post method to the decorator to allow for form submission. 
 #Redirect to /predict page with the output
-@app.route('/predict',methods=['POST'])
-def predict():
 
-    int_features = [float(x) for x in request.form.values()] #Convert string inputs to float.
-    features = [np.array(int_features)]  #Convert to the form [[a, b]] for input to the model
-    prediction = model.predict(features)  # features Must be in the form [[a, b]]
+# @app.route('/predict',methods=['POST'])
+# def predict():
 
-    output = round(prediction[0], 2)
+#     int_features = [float(x) for x in request.form.values()] #Convert string inputs to float.
+#     features = [np.array(int_features)]  #Convert to the form [[a, b]] for input to the model
+#     prediction = model.predict(features)  # features Must be in the form [[a, b]]
 
-    return render_template('index.html', prediction_text='Percent with heart disease is {}'.format(output))
+#     output = round(prediction[0], 2)
 
-@app.route('/camera',methods = ['GET'])
-def camera():
-    try:
-    # Your OpenCV code here
-        cam = cv2.VideoCapture(0)
-        # cv2.namedWindow("test")
-        img_counter = 0
-        while True:
-            ret, frame = cam.read()
-            if not ret:
-                print("failed to grab frame")
-                break
-            cv2.imshow("test", frame)
+#     return render_template('index.html', prediction_text='Percent with heart disease is {}'.format(output))
 
-            k = cv2.waitKey(1)
-            if k%256 == 27:
-                # ESC pressed
-                print("Escape hit, closing...")
-                break
-            elif k%256 == 32:
-                # SPACE pressed
-                img_name = "opencv_frame_{}.png".format(img_counter)
-                cv2.imwrite(img_name, frame)
-                print("{} written!".format(img_name))
-                img_counter += 1
 
-        cam.release()
-
-        cv2.destroyAllWindows()
-    except cv2.error as e:
-        print("OpenCV Error:", e)
     
-
+@app.route('/video_feed')
+def video_feed():
+    return Response(generate_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
 #When the Python interpreter reads a source file, it first defines a few special variables. 
