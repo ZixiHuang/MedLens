@@ -1,0 +1,82 @@
+import io, os
+import cv2
+import numpy as np
+from google.cloud import vision
+import object_tracking as ot
+import ocr
+import asyncio
+from concurrent.futures import ThreadPoolExecutor
+
+async def async_object_detection(client, frame):
+    loop = asyncio.get_event_loop()
+    with ThreadPoolExecutor() as pool:
+        objects, img_width, img_height = await loop.run_in_executor(pool, ot.object_tracking, frame, client)
+    return objects, img_width, img_height
+
+async def async_ocr(client, frame, drug_objects, img_width, img_height):
+    loop = asyncio.get_event_loop()
+    with ThreadPoolExecutor() as pool:
+        results = await asyncio.gather(
+            *[loop.run_in_executor(pool, ocr.get_ocr_result, client, frame, objs, img_width, img_height, True) for objs in drug_objects]
+        )
+    return results
+
+def is_valid_bbox(object):
+    vertices = object.bounding_poly.normalized_vertices
+    width = abs(vertices[1].x - vertices[0].x)
+    height = abs(vertices[2].y - vertices[0].y)
+    return width > 0.1 and height > 0.1
+
+if __name__ == '__main__':
+
+    client = vision.ImageAnnotatorClient()
+    vid = cv2.VideoCapture(0)
+
+    count = 0
+    objects = None
+    accumulated_objects = []
+
+    loop = asyncio.get_event_loop()
+
+    detection_scale_factor = 0.5  # for example, reduce resolution to half
+
+    while(True):
+        ret, frame = vid.read()
+        frame = cv2.flip(frame, 1)
+
+        if (count % 2 == 0):
+            resized_frame = cv2.resize(frame, (0, 0), fx=detection_scale_factor, fy=detection_scale_factor)
+            
+            # Perform object detection asynchronously
+            objects, img_width, img_height = loop.run_until_complete(async_object_detection(client, resized_frame))
+            
+            img_height /= detection_scale_factor
+            img_width /= detection_scale_factor
+            drug_object = [object_ for object_ in objects if object_.score >= 0.6 and object_.name == 'Packaged goods' and is_valid_bbox(object_)]
+            if drug_object:
+                accumulated_objects.append(drug_object)
+            # print(accumulated_objects)
+            if count % 30 == 0 and accumulated_objects:
+                # Perform OCR asynchronously using the accumulated objects
+                
+                results = loop.run_until_complete(async_ocr(client, frame, accumulated_objects, img_width, img_height))
+                # print(results)
+                accumulated_objects = []  # Clear the accumulated objects
+
+                count = 0
+
+        if objects:
+            annot_frame = ot.draw_bbox(frame, drug_object, img_width, img_height)
+        else:
+            annot_frame = frame
+
+        cv2.imshow('Video', annot_frame)
+        key = cv2.waitKey(1)
+
+        if key == ord('q'):
+            break
+
+        count += 1
+
+    vid.release()
+    cv2.destroyAllWindows()
