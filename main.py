@@ -15,8 +15,12 @@ def generate_frames():
     while True:
         success, frame = camera.read()  # read the camera frame
         if not success:
+            print("failed to grab frame")
             break
         else:
+            # k = cv2.waitKey(1)
+            # if k % 256 == 32:
+
             detector=cv2.CascadeClassifier('models/haarcascade_frontalface_default.xml')
             eye_cascade = cv2.CascadeClassifier('models/haarcascade_eye.xml')
             faces=detector.detectMultiScale(frame,1.1,7)

@@ -3,6 +3,7 @@ class DrugLensApp {
   constructor() {
   }
 
+
   // render() {
 
   // }
@@ -62,6 +63,19 @@ class DrugLensApp {
     instruction.classList.add("center-container")
   }
 
+  handleSpeech() {
+    const text = "hello, blablablablabla";
+      const speechSynthesis = window.speechSynthesis;
+
+      if (speechSynthesis) {
+        const utterance = new SpeechSynthesisUtterance(text);
+        speechSynthesis.speak(utterance);
+      } else {
+        alert('Text-to-speech is not supported in this browser.');
+      }
+      console.log("done speaking")
+  }
+
 
   init() {
     document
@@ -79,6 +93,9 @@ class DrugLensApp {
     document
       .getElementById("taking-img")
       .addEventListener("click", this.handleTakeImage.bind(this));
+    document
+      .getElementById("logo-img")
+      .addEventListener("click", this.handleSpeech.bind(this));
     // document
     //   .getElementById("notes-wall")
     //   .addEventListener("dblclick", this.handleNoteDoubleClick.bind(this));
