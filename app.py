@@ -15,7 +15,7 @@ from flask import Flask, request, render_template
 import pickle
 
 #Create an app object using the Flask class. 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='/static', static_folder='static')
 
 #Load the trained model. (Pickle file)
 model = pickle.load(open('models/model.pkl', 'rb'))
@@ -57,4 +57,4 @@ def predict():
 #If we import this file (module) to another file then __name__ == app (which is the name of this python file).
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)
