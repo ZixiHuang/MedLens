@@ -825,3 +825,9 @@ video {
 .focus\:outline-rose-700:focus{
   outline-color: #be123c;
 }
+
+#logo-img {
+  width: 30%;
+  height: 30%;
+  transform: scale(1.5);
+}

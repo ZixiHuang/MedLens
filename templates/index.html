@@ -4,30 +4,33 @@
   <html lang="en">
     <head>
       <meta charset="UTF-8" />
-      <!-- <link rel="icon" type="image/x-icon" href="/favicon.png" /> -->
+      <link rel="icon" type="image/x-icon" href="../static/icon/favicon.ico" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <link href="{{ url_for('static', filename='css/app.css') }}" rel="stylesheet">
-      <title>Sticky Notes App</title>
+      <title>DrugLens</title>
     </head>
     <body class="bg-stone-100 font-patrick-hand">
       <header class="max-w-3xl py-4 mx-auto mt-5 font-thin text-center">
-        <!-- <div class="flex items-center justify-center mb-5">
-          <img src="/logo.png" alt="" sizes="" srcset="" />
-        </div> -->
-        <h1 class="mb-4 text-7xl text-rose-700">^^ Sticky Notes ^^</h1>
+        <div class="flex items-center justify-center mb-5">
+          <img src="../static/logo/logo.png" alt="" sizes="" srcset="" id = "logo-img"/>
+        </div>
+        <h1 class="mb-4 text-7xl text-rose-700">DrugLens^_^</h1>
       </header>
   
       <main class="max-w-3xl p-5 mx-auto font-thin bg-white divide-y shadow-md">
         <textarea
-          id="new-note"
-          placeholder="Create a new note..."
+          id="body-condition-text"
+          placeholder="Please describe your relevant body condition, such as disease, allergy, etc"
           autofocus
           rows="3"
           class="w-full p-4 mb-5 text-2xl italic outline-none resize-none focus:outline-offset-0 focus:outline-rose-700"
         ></textarea>
+
+        <input type="file" accept="image/*" capture="camera">
+
   
-        <section id="notes-wall" class="flex flex-wrap justify-start">
-          <!-- Example of a note -->
+        <!-- <section id="notes-wall" class="flex flex-wrap justify-start">
+
           <div
             class="relative w-40 h-40 p-0 m-2 overflow-y-auto transition-transform transform bg-yellow-200 shadow-lg note hover:scale-105"
           >
@@ -56,7 +59,7 @@
             >Buy bread</textarea
             >
           </div>
-        </section>
+        </section> -->
         <div class="login">
           <h1 style="color:Violet;">Heart disease prediction</h1>
         
