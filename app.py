@@ -13,6 +13,7 @@ people with heart disease in an imaginary sample of 500 towns.
 import numpy as np
 from flask import Flask, request, render_template
 import pickle
+import cv2
 
 #Create an app object using the Flask class. 
 app = Flask(__name__, static_url_path='/static', static_folder='static')
@@ -46,6 +47,30 @@ def predict():
     output = round(prediction[0], 2)
 
     return render_template('index.html', prediction_text='Percent with heart disease is {}'.format(output))
+
+@app.route('/camera',methods = ['GET'])
+def camera():
+    vid = cv2.VideoCapture(0)
+    # while(True):
+    #     # Capture the video frame
+    #     # by frame
+    #     ret, frame = vid.read()
+    
+    #     # Display the resulting frame
+    #     cv2.imshow('frame', frame)
+        
+    #     # the 'q' button is set as the
+    #     # quitting button you may use any
+    #     # desired button of your choice
+    #     if cv2.waitKey(1) & 0xFF == ord('q'):
+    #         break
+    
+    # After the loop release the cap object
+    vid.release()
+    # Destroy all the windows
+    cv2.destroyAllWindows()
+
+
 
 
 #When the Python interpreter reads a source file, it first defines a few special variables. 
