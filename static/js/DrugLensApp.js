@@ -38,11 +38,35 @@ class DrugLensApp {
   //     this.renderNotes(); 
   //   }
   // }
+  handleGetTeamInfo() {
+    const information = document.getElementById("info")
+    information.innerHTML = "<p> We are a Hophacks 2023 team composed of Chujian Yu, Lance Lian, Joanna Cheng and Kevin Huang</p> "
+  }
+
+  handleGetHomeInfo() {
+    const information = document.getElementById("info")
+    information.innerHTML = ""
+  }
+
+  handleGetAboutInfo() {
+    const information = document.getElementById("info")
+    information.innerHTML = "<p> This is an app that helps you to get instruction on a medication simply by taking a photo of the bottle </p>"
+  }
+
 
   init() {
     document
       .getElementById("body-condition-text")
       .addEventListener("keydown", this.handleBodyConditionKeyDown.bind(this));
+    document
+      .getElementById("team")
+      .addEventListener("click", this.handleGetTeamInfo.bind(this));
+    document
+      .getElementById("about")
+      .addEventListener("click", this.handleGetAboutInfo.bind(this));
+    document
+      .getElementById("home")
+      .addEventListener("click", this.handleGetHomeInfo.bind(this));
     // document
     //   .getElementById("notes-wall")
     //   .addEventListener("dblclick", this.handleNoteDoubleClick.bind(this));
