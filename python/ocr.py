@@ -55,31 +55,34 @@ def video_detect_text(path, silence=True):
 
     return detected_texts
 
-def get_highest_score_image(frame, objects, width, height):
-    if objects is None or len(objects) == 0:
+def get_highest_score_image(frame_objects, width, height):
+    if frame_objects is None or len(frame_objects) == 0:
         return None
-    objects.sort(key=lambda obj: obj.score, reverse=True)
-    top = objects[0]
+    frame_objects.sort(key=lambda obj: obj[1].score, reverse=True)
+    top_fr_obj = frame_objects[0]
+    frame = top_fr_obj[0]
+    top = top_fr_obj[1]
     bounding = top.bounding_poly
     x1, y1 = int(bounding.normalized_vertices[0].x * width), int(bounding.normalized_vertices[0].y * height)
     x3, y3 = int(bounding.normalized_vertices[2].x * width), int(bounding.normalized_vertices[2].y * height)
 
-    frame = cv2.flip(frame, 1)
-    cropped_image = frame[y1:y3, x1:x3]
+    cropped = frame[y1:y3, x1:x3]
+    cropped = cv2.flip(cropped, 1)
 
-    is_success, im_buf_arr = cv2.imencode(".jpg", cropped_image)
+    is_success, im_buf_arr = cv2.imencode(".jpg", cropped)
+
     if not is_success:
         return None
 
     return im_buf_arr.tobytes()
 
 
-def get_ocr_result(client, frame, objects, width, height, silence = True):
+def get_ocr_result(client, frame_objects, width, height, silence = True):
     concat_texts = ""
     concat_texts_w_bbox = []
-    img_bytes = get_highest_score_image(frame, objects, width, height)
+    img_bytes = get_highest_score_image(frame_objects, width, height)
     if img_bytes:
-        text, texts_w_bbox = detect_text(client, img_bytes = img_bytes, silence = silence)
+        text, texts_w_bbox = detect_text(client, img_bytes = img_bytes)
         if text:
             concat_texts += text
         if texts_w_bbox:
@@ -89,7 +92,7 @@ def get_ocr_result(client, frame, objects, width, height, silence = True):
     return concat_texts, concat_texts_w_bbox
 
 
-def detect_text(client, path = None, img_bytes = None, silence=True):
+def detect_text(client, path = None, img_bytes = None):
     if path is None and img_bytes is None:
         return None, None
 
@@ -129,15 +132,12 @@ def detect_text(client, path = None, img_bytes = None, silence=True):
                         "bounding_box": bounding_box
                     })
 
-                    if not silence:
-                        print(f'Word: {word_text}, Confidence: {confidence}')
-                        print(f'Bounding Box: {bounding_box}')
-
     if response.error.message:
         raise Exception(
             "{}\nFor more info on error messages, check: "
             "https://cloud.google.com/apis/design/errors".format(response.error.message)
         )
+    print(ordered_text)
     return ordered_text, texts_w_bbox
 
 if __name__ == "__main__":

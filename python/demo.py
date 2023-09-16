@@ -28,12 +28,8 @@ if __name__ == '__main__':
         
     
         if (count % 5 == 0):
-            detection_scale_factor = 0.5  # for example, reduce resolution to half
-            resized_frame = cv2.resize(frame, (0, 0), fx=detection_scale_factor, fy=detection_scale_factor)
 
-            objects, img_width, img_height = ot.object_tracking(resized_frame, client)
-            img_height /= detection_scale_factor
-            img_width /= detection_scale_factor
+            objects, img_width, img_height = ot.object_tracking(frame, client)
             # filter drug objects
             drug_object = []
             for object_ in objects:
@@ -44,9 +40,7 @@ if __name__ == '__main__':
 
                 drug_object.append(object_)
                 break
-
-            text, details = ocr.get_ocr_result(client, frame, drug_object, img_width, img_height)
-            print(details) if len(details) > 0 else None
+            text, details = ocr.get_ocr_result(client, frame, drug_object, img_width, img_height, False)
             
 
             count = 0

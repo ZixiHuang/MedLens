@@ -25,10 +25,11 @@ def object_tracking(frame, client):
 
 def draw_bbox(frame, objects, width, height):
 
-
+    if objects is None or len(objects) == 0:
+        return frame
     for object_ in objects:
 
-        bounding = object_.bounding_poly
+        bounding = object_[1].bounding_poly
         x1, y1 = int(bounding.normalized_vertices[0].x * width), int(bounding.normalized_vertices[0].y * height)
         x2, y2 = int(bounding.normalized_vertices[1].x * width), int(bounding.normalized_vertices[1].y * height)
         x3, y3 = int(bounding.normalized_vertices[2].x * width), int(bounding.normalized_vertices[2].y * height)
@@ -38,6 +39,6 @@ def draw_bbox(frame, objects, width, height):
                                       (int(x3), int(y3)),
                                       (0, 0, 255), 4)
 
-        cv2.putText(frame, object_.name, (x1, y1 - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+        cv2.putText(frame, object_[1].name, (x1, y1 - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
 
     return frame
