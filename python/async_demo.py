@@ -6,6 +6,7 @@ import object_tracking as ot
 import ocr
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
+import openaiAPI as openai
 
 async def async_object_detection(client, frame):
     loop = asyncio.get_event_loop()
@@ -63,6 +64,7 @@ if __name__ == '__main__':
                 print(len(accumulated_objects))
                 results = loop.run_until_complete(async_ocr(client, accumulated_objects, img_width, img_height))
                 full_texts = [result[0] for result in results]
+                print(openai.generate_response("19 yo, allergic to sea food", "".join(full_texts)))
                 print(full_texts)
                 accumulated_objects = []  # Clear the accumulated objects
 
