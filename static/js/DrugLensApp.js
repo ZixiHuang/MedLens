@@ -53,6 +53,15 @@ class DrugLensApp {
     information.innerHTML = "<p> This is an app that helps you to get instruction on a medication simply by taking a photo of the bottle </p>"
   }
 
+  handleTakeImage() {
+    const liveWindow = document.getElementById("live-window")
+    liveWindow.classList.add("center-container")
+    liveWindow.classList.remove("hidden")
+    const instruction = document.getElementById("take-picture-instruction")
+    instruction.classList.remove("hidden") 
+    instruction.classList.add("center-container")
+  }
+
 
   init() {
     document
@@ -67,6 +76,9 @@ class DrugLensApp {
     document
       .getElementById("home")
       .addEventListener("click", this.handleGetHomeInfo.bind(this));
+    document
+      .getElementById("taking-img")
+      .addEventListener("click", this.handleTakeImage.bind(this));
     // document
     //   .getElementById("notes-wall")
     //   .addEventListener("dblclick", this.handleNoteDoubleClick.bind(this));

@@ -14,7 +14,8 @@
         <div class="flex items-center justify-center mb-5">
           <img src="../static/logo/logo.png" alt="" sizes="" srcset="" id = "logo-img"/>
         </div>
-        <h1 class="mb-4 text-7xl text-rose-700">DrugLens^_^</h1>
+        <h1 class="mb-4 text-7xl text-rose-700">----DrugLens^_^----</h1>
+        <p id = "sub-header">For better mediation usage</p>
       </header>
   
       <main class="max-w-3xl p-5 mx-auto font-thin bg-white divide-y shadow-md">
@@ -26,15 +27,30 @@
           class="w-full p-4 mb-5 text-2xl italic outline-none resize-none focus:outline-offset-0 focus:outline-rose-700"
         ></textarea>
 
-        <div id = "upload-img">
+        <div id = "upload-img" class = "center-container">
           <label class="image-upload button-33">
           <input type="file" accept="image/*" capture="camera">
           Upload Now!
       </label>
     </div>
-        
-         <img src = "{{ url_for('video_feed')}}" width = 50%>
+
+    <div id = "taking-img" class = "center-container">
+      <label class="image-upload button-85">
+      Take live pic!
+  </label>
+</div>
+
+      <div id = "live-window" class = "hidden">
+        <img src = "{{ url_for('video_feed')}}" width = 70%>
+      </div> 
+      <div id = "take-picture-instruction" class = "hidden ">
+        Use space to take and upload picture!
+      </div>
       </main>
+
+      <div id = instruction-section>
+
+      </div>
 
       <footer class="footer">
         <div class="waves">
