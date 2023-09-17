@@ -4,7 +4,7 @@ from flask import Flask, request, render_template, Response, jsonify
 import pickle
 import cv2
 from python import async_demo
-
+response = []
 #Create an app object using the Flask  class. 
 app = Flask(__name__, static_url_path='/static', static_folder='static')
 camera = cv2.VideoCapture(0)
@@ -76,9 +76,15 @@ def home():
 
 @app.route('/video_feed')
 def video_feed():
-    return Response(async_demo.analyze_img(), mimetype='multipart/x-mixed-replace; boundary=frame')
+    return Response(async_demo.analyze_img(response), mimetype='multipart/x-mixed-replace; boundary=frame')
 
-
+@app.route('/get-updated-response', methods=['GET'])
+def get_updated_data():
+    if (not response or len(response) == 0):
+        return jsonify()
+    data = response.copy()
+    response.clear()
+    return jsonify(data)
 
 #When the Python interpreter reads a source file, it first defines a few special variables. 
 #For now, we care about the __name__ variable.

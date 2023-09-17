@@ -3,6 +3,25 @@ class DrugLensApp {
   constructor() {
   }
 
+  async fetchUpdatedData() {
+    try {
+        const response = await fetch('/get-updated-response');
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const data = await response.json();
+        if (data === null || data.length === 0) {
+          return;
+        }
+        // Do something with the data, e.g., update the DOM or store it in a variable
+        console.log(data);
+        const instructionDiv = document.getElementById("instruction-section");
+        instructionDiv.textContent = data[0];
+    } catch (error) {
+        console.error("Error fetching updated data:", error);
+    }
+}
+
 
   // render() {
 
@@ -78,6 +97,7 @@ class DrugLensApp {
 
 
   init() {
+    
     document
       .getElementById("body-condition-text")
       .addEventListener("keydown", this.handleBodyConditionKeyDown.bind(this));
@@ -105,7 +125,8 @@ class DrugLensApp {
       // document
       // .getElementsByClassName("delete-btn")
       // .addEventListener("click", this.handleDeleteClick(this));
-   
+      this.fetchUpdatedData = this.fetchUpdatedData.bind(this);
+      setInterval(this.fetchUpdatedData, 5000);
   }
 }
 

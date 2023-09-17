@@ -34,8 +34,7 @@ def is_valid_bbox(object):
     height = abs(vertices[2].y - vertices[0].y)
     return width > 0.1 and height > 0.1
 
-def analyze_img():
-    instruction = ""
+def analyze_img(res):
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
 
@@ -72,7 +71,7 @@ def analyze_img():
                     if task.done():
                         response = task.result()
                         # Handle the response here, e.g., print it
-                        instruction += response
+                        res.append(response)
                         print(instruction)
                         pending_responses.remove(task)
                         return
