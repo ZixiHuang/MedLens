@@ -156,16 +156,6 @@ class DrugLensApp {
     document
       .getElementById("logo-img")
       .addEventListener("click", this.handleSpeech.bind(this));
-
-    // document
-    //   .getElementById("notes-wall")
-    //   .addEventListener("dblclick", this.handleNoteDoubleClick.bind(this));
-      // document
-      // .getElementById("notes-wall")
-      // .addEventListener("keydown", this.handleEditNoteKeyDown(this));
-      // document
-      // .getElementsByClassName("delete-btn")
-      // .addEventListener("click", this.handleDeleteClick(this));
       this.fetchUpdatedData = this.fetchUpdatedData.bind(this);
       setInterval(this.fetchUpdatedData, 5000);
 

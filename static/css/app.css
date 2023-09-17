@@ -833,9 +833,9 @@ video {
 }
 
 #logo-img {
-  width: 30%;
-  height: 30%;
-  transform: scale(3);
+  width: 80%;
+  height: 80%;
+  transform: scale(1);
 }
 
 .footer {
@@ -1002,7 +1002,7 @@ h1 {
   border-radius: 100px;
   /*box-shadow: rgba(19, 24, 21, 0.2) 0 -25px 18px -14px inset,rgba(16, 19, 17, 0.15) 0 1px 2px,rgba(210, 211, 210, 0.15) 0 2px 4px,rgba(44, 187, 99, .15) 0 4px 8px,rgba(44, 187, 99, .15) 0 8px 16px,rgba(44, 187, 99, .15) 0 16px 32px;
   */
-  color: rgb(0, 0, 0);
+  color: rgb(45, 39, 44);
   cursor: pointer;
   display: inline-block;
   letter-spacing: 3px;
@@ -1290,5 +1290,7 @@ h1 {
   color: #f0a500; /* Hover color */
 }
 
-
+textarea {
+  z-index: 999;
+}
 
