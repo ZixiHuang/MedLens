@@ -83,7 +83,7 @@ class DrugLensApp {
   }
 
   handleSpeech() {
-    const text = "hello, blablablablabla";
+    const text = "what is the temperature in Sydney";
       const speechSynthesis = window.speechSynthesis;
 
       if (speechSynthesis) {
