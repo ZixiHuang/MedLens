@@ -90,6 +90,7 @@ def analyze_img(res, body_cond, callback, on_finish_callback, text_to_speech_cal
                 for result in results:
                     if result[0]:
                         full_texts.extend(result[0])
+                print(full_texts)
                 task = loop.create_task(async_openai_response(body_cond, "".join(full_texts[0:min(500, len(full_texts))])))
                 if callback:
                     callback()
@@ -104,9 +105,6 @@ def analyze_img(res, body_cond, callback, on_finish_callback, text_to_speech_cal
         if (count == 10 and not first_reminder):
             text_to_speech_callback("Please position the drug box in front of the webcam.")
             first_reminder = True
-        
-        if ( (count + 1) % 100 == 0 and len(accumulated_objects) < 3 or (count + 1) % 300 == 0):
-            text_to_speech_callback("Objects not found. Please adjust the drug box to be in front of the webcam.")
 
         if objects:
             annot_frame = ot.draw_bbox(frame, drug_object, img_width, img_height)

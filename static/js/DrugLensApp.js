@@ -112,18 +112,6 @@ class DrugLensApp {
     instruction.classList.add("center-container")
   }
 
-  handleSpeech() {
-    const text = "what is the temperature in Sydney";
-      const speechSynthesis = window.speechSynthesis;
-
-      if (speechSynthesis) {
-        const utterance = new SpeechSynthesisUtterance(text);
-        speechSynthesis.speak(utterance);
-      } else {
-        alert('Text-to-speech is not supported in this browser.');
-      }
-      console.log("done speaking")
-  }
 
 
   init() {
@@ -156,6 +144,7 @@ class DrugLensApp {
     document
       .getElementById("logo-img")
       .addEventListener("click", this.handleSpeech.bind(this));
+
       this.fetchUpdatedData = this.fetchUpdatedData.bind(this);
       setInterval(this.fetchUpdatedData, 5000);
 
