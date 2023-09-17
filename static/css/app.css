@@ -64,6 +64,10 @@ body {
   /* 1 */
   line-height: inherit;
   /* 2 */
+  background-image: url('../images/background.png');
+  background-size: cover; /* or background-size: contain; depending on your preference */
+  background-repeat: no-repeat;
+  background-attachment: fixed; /* Optional: Fixed background */
 }
 
 /*
@@ -835,7 +839,11 @@ video {
 .footer {
   position: relative;
   width: 100%;
-  background: #3586ff;
+  background: linear-gradient(
+    to bottom, 
+    #b8fcfc 0%,
+    #09b1db 100%
+  );
   min-height: 100px;
   padding: 20px 20px;
   display: flex;
@@ -873,7 +881,7 @@ video {
 }
 
 .menu__link {
-  font-size: 1.2rem;
+  font-size: 2rem;
   color: #fff;
   margin: 0 10px;
   display: inline-block;
@@ -890,7 +898,6 @@ video {
 .footer p {
   color: #fff;
   margin: 15px 0 10px 0;
-  font-size: 1rem;
   font-weight: 300;
 }
 
@@ -900,9 +907,20 @@ video {
   left: 0;
   width: 100%;
   height: 100px;
-  background: url("https://i.ibb.co/wQZVxxk/wave.png");
+  background: url('../images/lightwave.png');
   background-size: 1000px 100px;
 }
+
+/* .wave::before {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.5;;
+} */
 
 .wave#wave1 {
   z-index: 1000;
@@ -1137,5 +1155,9 @@ h1 {
 #sub-header {
   font-size: 30px;
   color: darkblue;
+}
+
+#info {
+  font-size: 1.5rem;
 }
 
