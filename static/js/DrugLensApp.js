@@ -4,8 +4,12 @@ class DrugLensApp {
     this.socket = io.connect('http://' + document.domain + ':' + location.port);
     this.socket.on('openai_task_started', function(data) {
         console.log("task started");
-        //TODO: add things here
-        // You can add any other logic here, like showing a notification to the user
+        const liveWindow = document.getElementById("live-window");
+        const picInstruction = document.getElementById("take-picture-instruction");
+        const loadingAnime = document.getElementById("loading");
+        liveWindow.style.display = "none";
+        loadingAnime.style.display = "flex";
+        picInstruction.style.display = "none"; 
     });
   }
 
@@ -46,6 +50,7 @@ class DrugLensApp {
     }
 }
 
+
   handleBodyConditionKeyDown(event) {
     if (event.key === 'Enter' && !event.shiftKey && event.target.value.trim() !== "") {
       event.preventDefault();
@@ -54,29 +59,6 @@ class DrugLensApp {
     }
   }
 
-  // handleEditNoteKeyDown(event) {
-  //   if (event.key === 'Enter' && !event.shiftKey && event.target.value.trim() !== "") {
-  //     event.preventDefault();
-  //     this.noteWall.toggleNote()
-  //     this.noteWall.addNote(event.target.value.trim());
-  //     event.target.value = "";
-  //     this.renderNotes();
-  //   }
-  // }
-
-  // handleNoteDoubleClick(event) {
-  //   if (event.target.classList.contains("note-text")) {
-  //     this.noteWall.toggleNote(event.target.textContent)
-  //     this.renderNotes();
-  //   }
-  // }
-
-  // handleDeleteClick(event) {
-  //   if(event.target.classList.contains("delete-btn")) {
-  //     this.noteWall.deleteNote(event.target.textContent);
-  //     this.renderNotes(); 
-  //   }
-  // }
   handleGetTeamInfo() {
     const information = document.getElementById("info")
     information.innerHTML = "<p> We are a Hophacks 2023 team composed of Chujian Yu, Lance Lian, Joanna Cheng and Kevin Huang</p> "

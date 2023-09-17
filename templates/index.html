@@ -30,15 +30,15 @@
           class="w-full p-4 mb-5 text-2xl italic outline-none resize-none focus:outline-offset-0 focus:outline-rose-700"
         ></textarea>
 
-        <div id = "upload-img" class = "center-container">
+        <!-- <div id = "upload-img" class = "center-container">
           <label class="image-upload button-33">
           <input type="file" accept="image/*" capture="camera">
           Upload Now!
       </label>
-    </div>
+    </div> -->
 
     <div id = "taking-img" class = "center-container">
-      <label class="image-upload button-78">
+      <label class="image-upload button-33">
       Take live pic!
   </label>
 </div>
@@ -46,6 +46,9 @@
       <div id = "live-window" class = "hidden">
         <img src = "{{ url_for('video_feed')}}" width = 80%>
       </div> 
+      <div id = "loading" class = "hidden center-flexible">
+        <div class="lds-heart"><div></div></div>
+      </div>
       <div id = "take-picture-instruction" class = "hidden ">
         Please hold the Bottle until the livestream over!
       </div>
