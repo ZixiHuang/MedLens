@@ -59,6 +59,17 @@ class DrugLensApp {
     }
   }
 
+  handleLocalStorage() {
+    const conditionText = document.getElementById("body-condition-text")
+    if (conditionText.textContent != null && conditionText.value !== "") {
+      localStorage.setItem('body-condition', conditionText.value);
+    }
+    this.socket.emit('update-body-condition', { text: conditionText.value });
+    console.log(conditionText.value)
+
+  }
+
+
   handleGetTeamInfo() {
     const information = document.getElementById("info")
     information.innerHTML = "<p> We are a Hophacks 2023 team composed of Chujian Yu, Lance Lian, Joanna Cheng and Kevin Huang</p> "
@@ -76,6 +87,8 @@ class DrugLensApp {
 
   handleTakeImage() {
     const liveWindow = document.getElementById("live-window")
+    liveWindow.innerHTML = `<img src="${videoFeedURL}" width="80%">`;
+    // liveWindow.innerHTML = " <img src = \"{{ url_for('video_feed')}}\" width = 80%> "; 
     liveWindow.classList.add("center-container")
     liveWindow.classList.remove("hidden")
     const instruction = document.getElementById("take-picture-instruction")
@@ -111,12 +124,15 @@ class DrugLensApp {
     document
       .getElementById("home")
       .addEventListener("click", this.handleGetHomeInfo.bind(this));
-    document
-      .getElementById("taking-img")
-      .addEventListener("click", this.handleTakeImage.bind(this));
+      
+      document.getElementById("taking-img").addEventListener("click", (event) => {
+        this.handleTakeImage(event);
+        this.handleLocalStorage(event);
+      });
     document
       .getElementById("logo-img")
       .addEventListener("click", this.handleSpeech.bind(this));
+
     // document
     //   .getElementById("notes-wall")
     //   .addEventListener("dblclick", this.handleNoteDoubleClick.bind(this));

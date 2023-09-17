@@ -44,7 +44,7 @@
 </div>
 
       <div id = "live-window" class = "hidden">
-        <img src = "{{ url_for('video_feed')}}" width = 80%>
+
       </div> 
       <div id = "loading" class = "hidden center-flexible">
         <div class="lds-heart"><div></div></div>
@@ -81,6 +81,9 @@
       <!-- Scripts here. Don't remove ↓ -->
       <script type="module" src="{{ url_for('static', filename='js/main.js') }}"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+      <script>
+        var videoFeedURL = "{{ url_for('video_feed') }}";
+      </script>
     </body>
   </html>
   

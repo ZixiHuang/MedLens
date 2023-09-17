@@ -8,6 +8,7 @@ from python import async_demo
 from google.cloud import texttospeech
 import base64
 response = []
+body_condition = ["normal"]
 #Create an app object using the Flask  class. 
 app = Flask(__name__, static_url_path='/static', static_folder='static')
 socketio = SocketIO(app, cors_allowed_origins="*")
@@ -15,6 +16,12 @@ socketio = SocketIO(app, cors_allowed_origins="*")
 @socketio.on('connect')
 def client_connected():
     print('Client connected')
+
+@socketio.on('update-body-condition')
+def send_updated_data(new_condition):
+    body_condition .clear()
+    body_condition.append(new_condition.get('text',''))
+    print('Body condition updated to: ' + str(body_condition))
 
 def notify_client_about_openai_task():
     socketio.emit('openai_task_started', {'data': 'OpenAI task initiated'})
@@ -87,7 +94,7 @@ def synthesize_text_to_speech():
 
 @app.route('/video_feed')
 def video_feed():
-    return Response(async_demo.analyze_img(response, notify_client_about_openai_task), mimetype='multipart/x-mixed-replace; boundary=frame')
+    return Response(async_demo.analyze_img(response, body_condition[0], notify_client_about_openai_task), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 @app.route('/get-updated-response', methods=['GET'])
 def get_updated_data():
