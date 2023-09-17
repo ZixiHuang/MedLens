@@ -22,6 +22,12 @@ async def async_ocr(client, drug_objects, img_width, img_height):
         )
     return results
 
+async def async_openai_response(prompt, message):
+    loop = asyncio.get_event_loop()
+    with ThreadPoolExecutor() as pool:
+        response = await loop.run_in_executor(pool, openai.generate_response, prompt, message)
+    return response
+
 def is_valid_bbox(object):
     vertices = object.bounding_poly.normalized_vertices
     width = abs(vertices[1].x - vertices[0].x)
@@ -66,8 +72,8 @@ def analyze_img():
                 print(len(accumulated_objects))
                 results = loop.run_until_complete(async_ocr(client, accumulated_objects, img_width, img_height))
                 full_texts = [result[0] for result in results]
-                # print(openai.generate_response("19 yo, allergic to sea food", "".join(full_texts)))
-                # print(full_texts)
+                response = loop.run_until_complete(async_openai_response("19 yo, allergic to sea food", "".join(full_texts)))
+                print(response)
                 accumulated_objects = []  # Clear the accumulated objects
 
                 count = 0
