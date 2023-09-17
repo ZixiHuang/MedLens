@@ -28,7 +28,9 @@ def is_valid_bbox(object):
     height = abs(vertices[2].y - vertices[0].y)
     return width > 0.1 and height > 0.1
 
-if __name__ == '__main__':
+def analyze_img():
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
 
     client = vision.ImageAnnotatorClient()
     vid = cv2.VideoCapture(0)
@@ -64,8 +66,8 @@ if __name__ == '__main__':
                 print(len(accumulated_objects))
                 results = loop.run_until_complete(async_ocr(client, accumulated_objects, img_width, img_height))
                 full_texts = [result[0] for result in results]
-                print(openai.generate_response("19 yo, allergic to sea food", "".join(full_texts)))
-                print(full_texts)
+                # print(openai.generate_response("19 yo, allergic to sea food", "".join(full_texts)))
+                # print(full_texts)
                 accumulated_objects = []  # Clear the accumulated objects
 
                 count = 0
@@ -75,13 +77,20 @@ if __name__ == '__main__':
         else:
             annot_frame = frame
 
-        cv2.imshow('Video', annot_frame)
-        key = cv2.waitKey(1)
+        # cv2.imshow('Video', annot_frame)
+        # key = cv2.waitKey(1)
 
-        if key == ord('q'):
-            break
+        # if key == ord('q'):
+        #     break
 
         count += 1
 
-    vid.release()
-    cv2.destroyAllWindows()
+        ret, buffer = cv2.imencode('.jpg', frame)
+
+        frame = buffer.tobytes()
+        yield (b'--frame\r\n'
+                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+
+
+    # vid.release()
+    # cv2.destroyAllWindows()

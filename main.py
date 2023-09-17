@@ -70,9 +70,14 @@ def home():
 
 
     
+# @app.route('/video_feed')
+# def video_feed():
+#     return Response(generate_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
+
 @app.route('/video_feed')
 def video_feed():
-    return Response(generate_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
+    return Response(async_demo.analyze_img(), mimetype='multipart/x-mixed-replace; boundary=frame')
+
 
 
 #When the Python interpreter reads a source file, it first defines a few special variables. 
