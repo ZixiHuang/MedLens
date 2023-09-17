@@ -1,6 +1,12 @@
 
 class DrugLensApp {
   constructor() {
+    this.socket = io.connect('http://' + document.domain + ':' + location.port);
+    this.socket.on('openai_task_started', function(data) {
+        console.log("task started");
+        //TODO: add things here
+        // You can add any other logic here, like showing a notification to the user
+    });
   }
 
   async fetchUpdatedData() {
@@ -140,6 +146,8 @@ class DrugLensApp {
       // .addEventListener("click", this.handleDeleteClick(this));
       this.fetchUpdatedData = this.fetchUpdatedData.bind(this);
       setInterval(this.fetchUpdatedData, 5000);
+
+      
   }
 }
 

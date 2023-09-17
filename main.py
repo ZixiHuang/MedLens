@@ -1,6 +1,7 @@
 
 import numpy as np
 from flask import Flask, request, render_template, Response, jsonify
+from flask_socketio import SocketIO, emit
 import pickle
 import cv2
 from python import async_demo
@@ -9,6 +10,16 @@ import base64
 response = []
 #Create an app object using the Flask  class. 
 app = Flask(__name__, static_url_path='/static', static_folder='static')
+socketio = SocketIO(app, cors_allowed_origins="*")
+
+@socketio.on('connect')
+def client_connected():
+    print('Client connected')
+
+def notify_client_about_openai_task():
+    socketio.emit('openai_task_started', {'data': 'OpenAI task initiated'})
+
+
 
 #Define the route to be home. 
 #The decorator below links the relative route of the URL to the function it is decorating.
@@ -76,7 +87,7 @@ def synthesize_text_to_speech():
 
 @app.route('/video_feed')
 def video_feed():
-    return Response(async_demo.analyze_img(response), mimetype='multipart/x-mixed-replace; boundary=frame')
+    return Response(async_demo.analyze_img(response, notify_client_about_openai_task), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 @app.route('/get-updated-response', methods=['GET'])
 def get_updated_data():
@@ -95,4 +106,4 @@ def get_updated_data():
 #If we import this file (module) to another file then __name__ == app (which is the name of this python file).
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    socketio.run(app, debug=True)

@@ -34,7 +34,7 @@ def is_valid_bbox(object):
     height = abs(vertices[2].y - vertices[0].y)
     return width > 0.1 and height > 0.1
 
-def analyze_img(res):
+def analyze_img(res, callback=None):
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
 
@@ -84,6 +84,8 @@ def analyze_img(res):
                 results = loop.run_until_complete(async_ocr(client, accumulated_objects, img_width, img_height))
                 full_texts = [result[0] for result in results]
                 task = loop.create_task(async_openai_response("19 yo, allergic to sea food", "".join(full_texts)))
+                if callback:
+                    callback()
                 pending_responses.append(task)
 
                 # print(response)
