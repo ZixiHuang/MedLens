@@ -15,7 +15,7 @@
           <img src="../static/logo/logo.png" alt="" sizes="" srcset="" id = "logo-img"/>
         </div>
         <h1 class="mb-4 text-7xl text-rose-700">---- DrugLens^_^ ----</h1>
-        <p id = "sub-header">For better mediation usage</p>
+        <p id = "sub-header">For better medication usage</p>
       </header>
   
       <main class="max-w-3xl p-5 mx-auto font-thin bg-white divide-y shadow-md">
@@ -41,16 +41,17 @@
 </div>
 
       <div id = "live-window" class = "hidden">
-        <img src = "{{ url_for('video_feed')}}" width = 70%>
+        <img src = "{{ url_for('video_feed')}}" width = 80%>
       </div> 
       <div id = "take-picture-instruction" class = "hidden ">
-        Use space to take and upload picture!
+        Please hold the Bottle until the livestream over!
+      </div>
+      <div id = "instruction-section" class = "center-container">
+        <p id = "instruction"></p>
       </div>
       </main>
 
-      <div id = "instruction-section">
-        <p id = "instruction"></p>
-      </div>
+      
 
       <footer class="footer">
         <div class="waves">

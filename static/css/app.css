@@ -1161,3 +1161,8 @@ h1 {
   font-size: 1.5rem;
 }
 
+#instruction-section {
+  font-size: 2rem;
+  margin: 7%;
+}
+
