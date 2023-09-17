@@ -17,6 +17,14 @@ class DrugLensApp {
       console.log("task ended");
       loadingAnime.style.display = "none";
   });
+  this.socket.on('make_text_to_speech', function(data) {
+    console.log("make text to speech");
+    const audioPlayer = document.getElementById("audioPlayer");
+    audioPlayer.src = data.data;
+    audioPlayer.play();
+});
+
+  
   }
 
   async fetchUpdatedData() {

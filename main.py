@@ -30,6 +30,33 @@ def notify_client_about_openai_task_ended():
 def notify_client_about_openai_task():
     socketio.emit('openai_task_started', {'data': 'OpenAI task initiated'})
 
+def client_text_to_speech(text_to_convert):
+     # Create a TextToSpeechClient
+    client = texttospeech.TextToSpeechClient()
+
+    # Configure the text-to-speech request
+    synthesis_input = texttospeech.SynthesisInput(text=text_to_convert)
+    voice = texttospeech.VoiceSelectionParams(
+        language_code='en-US',
+        name='en-US-Wavenet-F',
+        ssml_gender=texttospeech.SsmlVoiceGender.FEMALE
+    )
+    audio_config = texttospeech.AudioConfig(
+        audio_encoding=texttospeech.AudioEncoding.LINEAR16
+    )
+
+    # Generate the speech
+    response = client.synthesize_speech(
+        input=synthesis_input, voice=voice, audio_config=audio_config
+    )
+
+    # Convert the audio content to base64
+    audio_base64 = base64.b64encode(response.audio_content).decode('utf-8')
+
+    # Return the audio data as a data URI in the response
+    data_uri = f"data:audio/wav;base64,{audio_base64}"
+    socketio.emit('make_text_to_speech', {'data': data_uri})
+
 
 
 #Define the route to be home. 
@@ -98,7 +125,7 @@ def synthesize_text_to_speech():
 
 @app.route('/video_feed')
 def video_feed():
-    return Response(async_demo.analyze_img(response, body_condition[0], notify_client_about_openai_task, notify_client_about_openai_task_ended), mimetype='multipart/x-mixed-replace; boundary=frame')
+    return Response(async_demo.analyze_img(response, body_condition[0], notify_client_about_openai_task, notify_client_about_openai_task_ended, client_text_to_speech), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 @app.route('/get-updated-response', methods=['GET'])
 def get_updated_data():

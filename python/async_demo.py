@@ -34,7 +34,7 @@ def is_valid_bbox(object):
     height = abs(vertices[2].y - vertices[0].y)
     return width > 0.1 and height > 0.1
 
-def analyze_img(res, body_cond, callback, on_finish_callback):
+def analyze_img(res, body_cond, callback, on_finish_callback, text_to_speech_callback):
     print("entering analyze_img: " + body_cond)
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
@@ -51,8 +51,10 @@ def analyze_img(res, body_cond, callback, on_finish_callback):
     detection_scale_factor = 0.5  # for example, reduce resolution to half
 
     pending_responses = []  # List to hold pending tasks
-
+    
+    first_reminder = False
     while(True):
+        
         ret, frame = vid.read()
         frame = cv2.flip(frame, 1)
 
@@ -79,7 +81,7 @@ def analyze_img(res, body_cond, callback, on_finish_callback):
                         return
 
             if count % 15 == 0 and accumulated_objects and len(accumulated_objects) > 15:
-                
+                text_to_speech_callback("Scan complete. Hang tight while I sort out the drug details for you.")
                 # Perform OCR asynchronously using the accumulated objects
                 print("entering ocr")
                 print(len(accumulated_objects))
@@ -98,6 +100,13 @@ def analyze_img(res, body_cond, callback, on_finish_callback):
                 
 
                 count = 0
+
+        if (count == 10 and not first_reminder):
+            text_to_speech_callback("Please position the drug box in front of the webcam.")
+            first_reminder = True
+        
+        if ( (count + 1) % 100 == 0 and len(accumulated_objects) < 3 or (count + 1) % 300 == 0):
+            text_to_speech_callback("Objects not found. Please adjust the drug box to be in front of the webcam.")
 
         if objects:
             annot_frame = ot.draw_bbox(frame, drug_object, img_width, img_height)
