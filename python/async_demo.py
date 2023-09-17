@@ -7,7 +7,7 @@ from . import ocr
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
 from . import openaiAPI as openai
-
+instruction = ""
 async def async_object_detection(client, frame):
     loop = asyncio.get_event_loop()
     with ThreadPoolExecutor() as pool:
@@ -35,6 +35,7 @@ def is_valid_bbox(object):
     return width > 0.1 and height > 0.1
 
 def analyze_img():
+    instruction = ""
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
 
@@ -66,8 +67,17 @@ def analyze_img():
             drug_object = [(frame, object_) for object_ in objects if object_.score >= 0.6 and object_.name == 'Packaged goods' and is_valid_bbox(object_)]
             if drug_object:
                 accumulated_objects.append(drug_object)
+            
+            for task in pending_responses:
+                    if task.done():
+                        response = task.result()
+                        # Handle the response here, e.g., print it
+                        instruction += response
+                        print(instruction)
+                        pending_responses.remove(task)
+                        return
 
-            if count % 15 == 0 and accumulated_objects:
+            if count % 15 == 0 and accumulated_objects and len(accumulated_objects) > 15:
                 
                 # Perform OCR asynchronously using the accumulated objects
                 print("entering ocr")
@@ -79,12 +89,7 @@ def analyze_img():
 
                 # print(response)
                 accumulated_objects = []  # Clear the accumulated objects
-                for task in pending_responses:
-                    if task.done():
-                        response = task.result()
-                        # Handle the response here, e.g., print it
-                        print(response)
-                        pending_responses.remove(task)
+                
 
                 count = 0
 
