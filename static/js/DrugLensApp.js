@@ -15,17 +15,12 @@ class DrugLensApp {
         }
         // Do something with the data, e.g., update the DOM or store it in a variable
         console.log(data);
-        const instructionDiv = document.getElementById("instruction-section");
-        instructionDiv.textContent = data[0];
+        const instructionText = document.getElementById("instruction");
+        instructionText.textContent = data[0];
     } catch (error) {
         console.error("Error fetching updated data:", error);
     }
 }
-
-
-  // render() {
-
-  // }
 
   handleBodyConditionKeyDown(event) {
     if (event.key === 'Enter' && !event.shiftKey && event.target.value.trim() !== "") {
