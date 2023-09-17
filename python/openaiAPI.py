@@ -8,9 +8,8 @@ def generate_response(patient_info: str, med_info: str):
 
   # Get API key from environment variable
   openai.api_key = os.getenv("OPENAI_API_KEY")
-
   completion = openai.ChatCompletion.create(
-    model = "gpt-3.5-turbo",
+    model = "gpt-4",
     temperature = 0.8,
     max_tokens = 2048,
     messages = [

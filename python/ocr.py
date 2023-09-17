@@ -78,13 +78,13 @@ def get_highest_score_image(frame_objects, width, height):
 
 
 def get_ocr_result(client, frame_objects, width, height, silence = True):
-    concat_texts = ""
+    concat_texts = []
     concat_texts_w_bbox = []
     img_bytes = get_highest_score_image(frame_objects, width, height)
     if img_bytes:
         text, texts_w_bbox = detect_text(client, img_bytes = img_bytes)
         if text:
-            concat_texts += text
+            concat_texts.append(text)
         if texts_w_bbox:
             concat_texts_w_bbox.append(texts_w_bbox)
     if not silence:

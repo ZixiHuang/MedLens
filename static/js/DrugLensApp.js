@@ -8,9 +8,15 @@ class DrugLensApp {
         const picInstruction = document.getElementById("take-picture-instruction");
         const loadingAnime = document.getElementById("loading");
         liveWindow.style.display = "none";
+        liveWindow.innerHTML = "";
         loadingAnime.style.display = "flex";
         picInstruction.style.display = "none"; 
     });
+    this.socket.on('openai_task_ended', function(data) {
+      const loadingAnime = document.getElementById("loading");
+      console.log("task ended");
+      loadingAnime.style.display = "none";
+  });
   }
 
   async fetchUpdatedData() {
@@ -63,9 +69,10 @@ class DrugLensApp {
     const conditionText = document.getElementById("body-condition-text")
     if (conditionText.textContent != null && conditionText.value !== "") {
       localStorage.setItem('body-condition', conditionText.value);
+      this.socket.emit('update-body-condition', { text: conditionText.value });
+      console.log("post init update body val:" + conditionText.value)
     }
-    this.socket.emit('update-body-condition', { text: conditionText.value });
-    console.log(conditionText.value)
+    
 
   }
 
@@ -88,6 +95,7 @@ class DrugLensApp {
   handleTakeImage() {
     const liveWindow = document.getElementById("live-window")
     liveWindow.innerHTML = `<img src="${videoFeedURL}" width="80%">`;
+    liveWindow.style.display = "flex";
     // liveWindow.innerHTML = " <img src = \"{{ url_for('video_feed')}}\" width = 80%> "; 
     liveWindow.classList.add("center-container")
     liveWindow.classList.remove("hidden")
@@ -111,7 +119,11 @@ class DrugLensApp {
 
 
   init() {
-    
+    if (localStorage.getItem('body-condition') != null) {
+      document.getElementById("body-condition-text").placeholder = localStorage.getItem('body-condition');
+      this.socket.emit('update-body-condition', { text: localStorage.getItem('body-condition')});
+      console.log("init body val:" + localStorage.getItem('body-condition'))
+    }
     document
       .getElementById("body-condition-text")
       .addEventListener("keydown", this.handleBodyConditionKeyDown.bind(this));

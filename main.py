@@ -23,6 +23,10 @@ def send_updated_data(new_condition):
     body_condition.append(new_condition.get('text',''))
     print('Body condition updated to: ' + str(body_condition))
 
+
+def notify_client_about_openai_task_ended():
+    socketio.emit('openai_task_ended', {'data': 'OpenAI task finished'})
+
 def notify_client_about_openai_task():
     socketio.emit('openai_task_started', {'data': 'OpenAI task initiated'})
 
@@ -94,7 +98,7 @@ def synthesize_text_to_speech():
 
 @app.route('/video_feed')
 def video_feed():
-    return Response(async_demo.analyze_img(response, body_condition[0], notify_client_about_openai_task), mimetype='multipart/x-mixed-replace; boundary=frame')
+    return Response(async_demo.analyze_img(response, body_condition[0], notify_client_about_openai_task, notify_client_about_openai_task_ended), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 @app.route('/get-updated-response', methods=['GET'])
 def get_updated_data():
