@@ -2,11 +2,11 @@ import io, os
 import cv2
 import numpy as np
 from google.cloud import vision
-import object_tracking as ot
-import ocr
+from . import object_tracking as ot
+from . import ocr
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
-import openaiAPI as openai
+from . import openaiAPI as openai
 
 async def async_object_detection(client, frame):
     loop = asyncio.get_event_loop()
