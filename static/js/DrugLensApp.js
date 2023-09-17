@@ -15,8 +15,26 @@ class DrugLensApp {
         }
         // Do something with the data, e.g., update the DOM or store it in a variable
         console.log(data);
-        const instructionText = document.getElementById("instruction");
-        instructionText.textContent = data[0];
+        const instructionDiv = document.getElementById("instruction-section");
+        instructionDiv.textContent = data[0];
+        // Make an AJAX request to the Flask route to synthesize audio
+        const synthResponse = await fetch('/synthesize', {
+          method: "POST",
+          headers: {
+              "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ text: data[0] })
+        });
+
+        if (!synthResponse.ok) {
+            throw new Error(`HTTP error during synthesis! Status: ${synthResponse.status}`);
+        }
+
+        const synthData = await synthResponse.json();
+        const audioDataUri = synthData.audio_data_uri;
+        const audioPlayer = document.getElementById("audioPlayer");
+        audioPlayer.src = audioDataUri;
+        audioPlayer.play();
     } catch (error) {
         console.error("Error fetching updated data:", error);
     }

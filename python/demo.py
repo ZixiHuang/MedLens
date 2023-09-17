@@ -1,64 +1,37 @@
 # Imports the Google Cloud client library
-import io, os
-from numpy import random
-import numpy as np
-from google.cloud import vision
-import pandas as pd
-import cv2
-import object_tracking as ot
-import ocr
 
+import numpy as np
+from flask import Flask, request, render_template, Response, jsonify
+
+from google.cloud import texttospeech
+import base64
 
 if __name__ == '__main__':
+    # text = request.json.get('text', '')
 
-    # localize_objects( "/Users/joanna/Desktop/hophacks/drug.jpeg")
+    # Create a TextToSpeechClient
+    client = texttospeech.TextToSpeechClient()
 
-    client = vision.ImageAnnotatorClient()
+    # Configure the text-to-speech request
+    synthesis_input = texttospeech.SynthesisInput(text="Test hello world")
+    voice = texttospeech.VoiceSelectionParams(
+        language_code='en-US',
+        name='en-US-Wavenet-F',
+        ssml_gender=texttospeech.SsmlVoiceGender.FEMALE
+    )
+    audio_config = texttospeech.AudioConfig(
+        audio_encoding=texttospeech.AudioEncoding.LINEAR16
+    )
 
-    # define a video capture object
-    vid = cv2.VideoCapture(0)
+    # Generate the speech
+    response = client.synthesize_speech(
+        input=synthesis_input, voice=voice, audio_config=audio_config
+    )
 
-    count = 0
-    objects = None
+    # Convert the audio content to base64
+    audio_base64 = base64.b64encode(response.audio_content).decode('utf-8')
 
-    while(True):
-      
-        ret, frame = vid.read()
-        frame = cv2.flip(frame, 1)
-        
-    
-        if (count % 5 == 0):
+    # Return the audio data as a data URI in the response
+    data_uri = f"data:audio/wav;base64,{audio_base64}"
 
-            objects, img_width, img_height = ot.object_tracking(frame, client)
-            # filter drug objects
-            drug_object = []
-            for object_ in objects:
-                if object_.score < 0.6:
-                    continue
-                if object_.name != 'Packaged goods':
-                    continue
-
-                drug_object.append(object_)
-                break
-            text, details = ocr.get_ocr_result(client, frame, drug_object, img_width, img_height, False)
-            
-
-            count = 0
-
-        if objects:
-            annot_frame = ot.draw_bbox(frame, drug_object, img_width, img_height)
-        else:
-            annot_frame = frame
-
-        cv2.imshow('Video', annot_frame)
-        key = cv2.waitKey(1)
-
-        if key == ord('q'):
-            break
-
-        count += 1
-  
-    # After the loop release the cap object
-    vid.release()
-    # Destroy all the windows
-    cv2.destroyAllWindows()
+    print(data_uri)

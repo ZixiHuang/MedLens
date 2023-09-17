@@ -4,6 +4,8 @@ from flask import Flask, request, render_template, Response, jsonify
 import pickle
 import cv2
 from python import async_demo
+from google.cloud import texttospeech
+import base64
 response = []
 #Create an app object using the Flask  class. 
 app = Flask(__name__, static_url_path='/static', static_folder='static')
@@ -18,6 +20,36 @@ app = Flask(__name__, static_url_path='/static', static_folder='static')
 @app.route('/')
 def home():
     return render_template('index.html', instruction_text = async_demo.instruction)
+
+@app.route('/synthesize', methods=['POST'])
+def synthesize_text_to_speech():
+    text = request.json.get('text', '')
+
+    # Create a TextToSpeechClient
+    client = texttospeech.TextToSpeechClient()
+
+    # Configure the text-to-speech request
+    synthesis_input = texttospeech.SynthesisInput(text=text)
+    voice = texttospeech.VoiceSelectionParams(
+        language_code='en-US',
+        name='en-US-Wavenet-F',
+        ssml_gender=texttospeech.SsmlVoiceGender.FEMALE
+    )
+    audio_config = texttospeech.AudioConfig(
+        audio_encoding=texttospeech.AudioEncoding.LINEAR16
+    )
+
+    # Generate the speech
+    response = client.synthesize_speech(
+        input=synthesis_input, voice=voice, audio_config=audio_config
+    )
+
+    # Convert the audio content to base64
+    audio_base64 = base64.b64encode(response.audio_content).decode('utf-8')
+
+    # Return the audio data as a data URI in the response
+    data_uri = f"data:audio/wav;base64,{audio_base64}"
+    return jsonify({'audio_data_uri': data_uri})
 
 #You can use the methods argument of the route() decorator to handle different HTTP methods.
 #GET: A GET message is send, and the server returns data

@@ -137,7 +137,7 @@ def detect_text(client, path = None, img_bytes = None):
             "{}\nFor more info on error messages, check: "
             "https://cloud.google.com/apis/design/errors".format(response.error.message)
         )
-    print(ordered_text)
+    # print(ordered_text)
     return ordered_text, texts_w_bbox
 
 if __name__ == "__main__":
