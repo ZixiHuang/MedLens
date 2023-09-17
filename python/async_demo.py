@@ -49,6 +49,8 @@ def analyze_img():
 
     detection_scale_factor = 0.5  # for example, reduce resolution to half
 
+    pending_responses = []  # List to hold pending tasks
+
     while(True):
         ret, frame = vid.read()
         frame = cv2.flip(frame, 1)
@@ -72,9 +74,17 @@ def analyze_img():
                 print(len(accumulated_objects))
                 results = loop.run_until_complete(async_ocr(client, accumulated_objects, img_width, img_height))
                 full_texts = [result[0] for result in results]
-                response = loop.run_until_complete(async_openai_response("19 yo, allergic to sea food", "".join(full_texts)))
-                print(response)
+                task = loop.create_task(async_openai_response("19 yo, allergic to sea food", "".join(full_texts)))
+                pending_responses.append(task)
+
+                # print(response)
                 accumulated_objects = []  # Clear the accumulated objects
+                for task in pending_responses:
+                    if task.done():
+                        response = task.result()
+                        # Handle the response here, e.g., print it
+                        print(response)
+                        pending_responses.remove(task)
 
                 count = 0
 
