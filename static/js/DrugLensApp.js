@@ -119,8 +119,12 @@ class DrugLensApp {
 
 
   init() {
-    if (localStorage.getItem('body-condition') != "") {
-      document.getElementById("body-condition-text").placeholder = localStorage.getItem('body-condition');
+    if (localStorage.getItem('body-condition') != null) {
+      if (localStorage.getItem('body-condition') !== "") {
+        document.getElementById("body-condition-text").placeholder = localStorage.getItem('body-condition')
+      } else {
+        document.getElementById("body-condition-text").placeholder = "Please describe your relevant body condition, such as disease, allergy, etc"
+      }
       this.socket.emit('update-body-condition', { text: localStorage.getItem('body-condition')});
       console.log("init body val:" + localStorage.getItem('body-condition'))
     }
