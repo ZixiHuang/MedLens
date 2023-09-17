@@ -7,18 +7,30 @@
       <link rel="icon" type="image/x-icon" href="../static/icon/favicon.ico" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <link href="{{ url_for('static', filename='css/app.css') }}" rel="stylesheet">
-      <title>DrugLens</title>
+      <title>MedLens</title>
     </head>
     <body class="font-patrick-hand">
+      <nav class="navbar">
+        <div class="logo">
+            <a href="#">MedLens💊</a>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#">Home</a></li>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Services</a></li>
+            <li><a href="#">Portfolio</a></li>
+            <li><a href="#">Contact</a></li>
+        </ul>
+    </nav>
       <header class="max-w-3xl py-4 mx-auto mt-5 font-thin text-center">
         <div class="flex items-center justify-center mb-5">
-          <img src="../static/logo/logo.png" alt="" sizes="" srcset="" id = "logo-img"/>
+          <img src="../static/logo/medication-logo.png" alt="" sizes="" srcset="" id = "logo-img"/>
         </div>
         <audio id="audioPlayer" class="hidden" controls>
           Your browser does not support the audio element.
         </audio>
-        <h1 class="mb-4 text-7xl text-rose-700">---- DrugLens^_^ ----</h1>
-        <p id = "sub-header">For better medication usage</p>
+        <!-- <h1 class="mb-4 text-7xl ">MedLens💊</h1>
+        <p id = "sub-header">For better medication usage</p > -->
       </header>
   
       <main class="max-w-3xl p-5 mx-auto font-thin bg-white divide-y shadow-md">
