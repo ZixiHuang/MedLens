@@ -1,5 +1,7 @@
 # 💊 MedLens: AI-Powered Accessible Medication Consultant
 
+[![Devpost](https://img.shields.io/badge/Devpost-MedLens-blue?style=flat&logo=devpost)](https://devpost.com/software/medlens)
+
 A software project submitted to HopHacks 2023. 
 
 **MedLens** is an AI-powered mobile application that helps users—especially those with visual impairments—safely understand and take their medications. Built as a submission for **HopHacks 2023**, MedLens leverages OCR and generative AI to transform complex, densely packed drug label information into clear, accessible, and actionable guidance.
